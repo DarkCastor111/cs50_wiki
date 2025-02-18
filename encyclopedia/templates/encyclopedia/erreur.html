@@ -1,0 +1,15 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    Encyclopedia - Error Page
+{% endblock %}
+
+{% block body %}
+    {% if msg_erreur %}
+        <h3 class="alert-danger m-2 p-4"> {{ msg_erreur }} </h3>
+    {% endif %}
+    {% if msg_warning %}
+        <h3 class="alert-warning m-2 p-4"> {{ msg_warning }} </h3>
+    {% endif %}
+
+{% endblock %}
