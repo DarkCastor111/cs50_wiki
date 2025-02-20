@@ -10,26 +10,29 @@ from . import util
 class FormRecherche(forms.Form):
     a_chercher = forms.CharField(label="", widget=forms.TextInput(attrs={'placeholder': 'Rechercher'}))
 
+class FormMiseAJour(forms.Form):
+    titre_article = forms.CharField(label="", widget=forms.TextInput(attrs={'placeholder': "Titre de l'article"}))
+    corps_article = forms.CharField(label="", widget=forms.TextInput(attrs={'placeholder': "Corps de l'article"}))
+
 def index(request):
     if request.method == "POST":
         form_recu = FormRecherche(request.POST)
         if form_recu.is_valid():
             article_a_trouver = form_recu.cleaned_data["a_chercher"]
             liste_articles = []
-            article_trouve = False
             for article in util.list_entries():
                 if article_a_trouver.upper() == article.upper():
-                    article_trouve = True
+                    liste_articles.append(article)
                     break
                 elif article_a_trouver.upper() in article.upper():
                     liste_articles.append(article)
-            if article_trouve:
+            if len(liste_articles) == 1:
                 return render(request, "encyclopedia/article.html", {
-                    "nom_article": article_a_trouver.capitalize(),
-                    "contenu_article": markdown2.markdown(util.get_entry(article_a_trouver)),
+                    "nom_article": liste_articles[0].capitalize(),
+                    "contenu_article": markdown2.markdown(util.get_entry(liste_articles[0])),
                     "form_recherche": FormRecherche()
                 })
-            if len(liste_articles) > 0:
+            elif len(liste_articles) > 1:
                 return render(request, "encyclopedia/index.html", {
                     "titre": f"Pages correspondant a '{article_a_trouver}'",
                     "entries": liste_articles,
@@ -58,8 +61,15 @@ def vue_article(request, article):
         return render(request, "encyclopedia/erreur.html", {
             "msg_erreur": f"Article '{article}' non trouvé.",
             "form_recherche": FormRecherche()
-        })     
-        
+        })
+
+def vue_modif_article(request):
+    #if request.method == "POST":
+
+    return render(request, "encyclopedia/maj_article.html", {
+        "titre": "Création nouvel article",
+        "form_maj": FormMiseAJour()
+    })           
 
 
 
