@@ -5,7 +5,12 @@
 {% endblock %}
 
 {% block body %}
-    <div>
-        {{ contenu_article|safe }}
+    <h1>{{ titre }} : {{ titre_article }} </h1>
+    <div class="container">
+        <form action="./{{ titre_article }}" method="post">
+            {% csrf_token %}
+            {{ form_maj }}
+            <input type="submit" value="Enregistrer">
+        </form>
     </div>
 {% endblock %}
